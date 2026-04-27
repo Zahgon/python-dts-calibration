@@ -1585,28 +1585,7 @@ def matching_section_location_indices(ix_sec, hix, tix):
     ix_from_cal_match_to_glob : ndarray
         Contains the global coordinate indices of the E.
     """
-    ix_cal_match = np.unique(np.concatenate((ix_sec, hix, tix)))
-    nx_cal_match = ix_cal_match.size
-    ix_sec2 = np.searchsorted(ix_cal_match, ix_sec)
-    ix_E0_mask = np.array([ix for ix in range(nx_cal_match) if ix != ix_sec2[0]])
-    ix_from_cal_match_to_glob = ix_cal_match[ix_E0_mask]
-    return ix_from_cal_match_to_glob
-    # contains all indices of the entire fiber that either are used for
-    # calibrating to reference temperature or for matching sections. Is sorted.
-    ix_cal_match = np.unique(np.concatenate((ix_sec, hix, tix)))
-
-    # number of locations of interest, width of the section of interest.
-    nx_cal_match = ix_cal_match.size
-
-    # indices in the section of interest. Including E0.
-    ix_sec2 = np.searchsorted(ix_cal_match, ix_sec)
-
-    # indices in the section of interest. Excluding E0
-    # ix_E0 mask - to exclude E[ix_sec[0]] from the E matrices
-    ix_E0_mask = np.array([ix for ix in range(nx_cal_match) if ix != ix_sec2[0]])
-    # contains the global coordinate indices of the E
-    ix_from_cal_match_to_glob = ix_cal_match[ix_E0_mask]
-    return ix_from_cal_match_to_glob
+    pass
 
 
 def construct_submatrices_matching_sections(x, ix_sec, hix, tix, nt, trans_att):

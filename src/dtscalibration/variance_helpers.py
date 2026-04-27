@@ -11,8 +11,7 @@ def variance_stokes_constant_helper(data_dict):
         return p[:xs, None] * p[None, xs:]
 
     def func_cost(p, data, xs):
-        fit = func_fit(p, xs)
-        return np.sum((fit - data) ** 2)
+        pass
 
     resid_list = []
 

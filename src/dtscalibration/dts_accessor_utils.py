@@ -32,20 +32,7 @@ def check_dims(
     --------
 
     """
-    if not correct_dims:
-        assert len(labels) > 1, "Define the correct dimensions"
-
-        for li in labels[1:]:
-            assert ds[labels[0]].dims == ds[li].dims, (
-                li + " does not have the correct dimensions."
-                " Should be " + str(ds[labels[0]].dims)
-            )
-    else:
-        for li in labels:
-            assert ds[li].dims == correct_dims, (
-                li + " does not have the correct dimensions. "
-                "Should be " + str(correct_dims)
-            )
+    pass
 
 
 class ParameterIndexDoubleEnded:
@@ -78,65 +65,31 @@ class ParameterIndexDoubleEnded:
 
     @property
     def all(self):
-        return np.concatenate(
-            (self.gamma, self.df, self.db, self.alpha, self.ta.flatten(order="F"))
-        )
+        pass
 
     @property
     def npar(self):
-        if not self.fix_gamma and not self.fix_alpha:
-            return 1 + 2 * self.nt + self.nx + 2 * self.nt * self.nta
-        elif self.fix_gamma and not self.fix_alpha:
-            return 2 * self.nt + self.nx + 2 * self.nt * self.nta
-        elif not self.fix_gamma and self.fix_alpha:
-            return 1 + 2 * self.nt + 2 * self.nt * self.nta
-        elif self.fix_gamma and self.fix_alpha:
-            return 2 * self.nt + 2 * self.nt * self.nta
+        pass
 
     @property
     def gamma(self):
-        if self.fix_gamma:
-            return []
-        else:
-            return [0]
+        pass
 
     @property
     def df(self):
-        if self.fix_gamma:
-            return list(range(self.nt))
-        else:
-            return list(range(1, self.nt + 1))
+        pass
 
     @property
     def db(self):
-        if self.fix_gamma:
-            return list(range(self.nt, 2 * self.nt))
-        else:
-            return list(range(1 + self.nt, 1 + 2 * self.nt))
+        pass
 
     @property
     def alpha(self):
-        if self.fix_alpha:
-            return []
-        elif self.fix_gamma:
-            return list(range(2 * self.nt, 1 + 2 * self.nt + self.nx))
-        elif not self.fix_gamma:
-            return list(range(1 + 2 * self.nt, 1 + 2 * self.nt + self.nx))
+        pass
 
     @property
     def ta(self):
-        if self.nta == 0:
-            return np.zeros((self.nt, 2, 0))
-        elif not self.fix_gamma and not self.fix_alpha:
-            arr = np.arange(1 + 2 * self.nt + self.nx, self.npar)
-        elif self.fix_gamma and not self.fix_alpha:
-            arr = np.arange(2 * self.nt + self.nx, self.npar)
-        elif not self.fix_gamma and self.fix_alpha:
-            arr = np.arange(1 + 2 * self.nt, self.npar)
-        elif self.fix_gamma and self.fix_alpha:
-            arr = np.arange(2 * self.nt, self.npar)
-
-        return arr.reshape((self.nt, 2, self.nta), order="F")
+        pass
 
     @property
     def taf(self):
@@ -144,7 +97,7 @@ class ParameterIndexDoubleEnded:
         ta = pval[1 + 2 * nt + nx:].reshape((nt, 2, nta), order='F')
         self['talpha_fw'] = (('time', 'trans_att'), ta[:, 0, :]).
         """
-        return self.ta[:, 0, :].flatten(order="C")
+        pass
 
     @property
     def tab(self):
@@ -152,7 +105,7 @@ class ParameterIndexDoubleEnded:
         ta = pval[1 + 2 * nt + nx:].reshape((nt, 2, nta), order='F')
         self['talpha_bw'] = (('time', 'trans_att'), ta[:, 1, :]).
         """
-        return self.ta[:, 1, :].flatten(order="C")
+        pass
 
     def get_ta_pars(self, pval):
         if self.nta > 0:
@@ -271,63 +224,32 @@ class ParameterIndexSingleEnded:
 
     @property
     def all(self):
-        return np.concatenate(
-            (self.gamma, self.dalpha, self.alpha, self.c, self.ta.flatten(order="F"))
-        )
+        pass
 
     @property
     def npar(self):
-        if self.includes_alpha:
-            return 1 + self.nx + self.nt + self.nta * self.nt
-        elif self.includes_dalpha:
-            return 1 + 1 + self.nt + self.nta * self.nt
-        else:
-            return 1 + self.nt + self.nta * self.nt
+        pass
 
     @property
     def gamma(self):
-        return [0]
+        pass
 
     @property
     def dalpha(self):
-        if self.includes_dalpha:
-            return [1]
-        else:
-            return []
+        pass
 
     @property
     def alpha(self):
-        if self.includes_alpha:
-            return list(range(1, 1 + self.nx))
-        else:
-            return []
+        pass
 
     @property
     def c(self):
-        if self.includes_alpha:
-            return list(range(1 + self.nx, 1 + self.nx + self.nt))
-        elif self.includes_dalpha:
-            return list(range(1 + 1, 1 + 1 + self.nt))
-        else:
-            return list(range(1, 1 + self.nt))
+        pass
 
     @property
     def taf(self):
         """Returns taf parameters of shape (nt, nta) or (nt, nta, a)."""
-        # ta = p_val[-nt * nta:].reshape((nt, nta), order='F')
-        # self["talpha"] = (('time', 'trans_att'), ta[:, :])
-        if self.includes_alpha:
-            return np.arange(
-                1 + self.nx + self.nt, 1 + self.nx + self.nt + self.nt * self.nta
-            ).reshape((self.nt, self.nta), order="F")
-        elif self.includes_dalpha:
-            return np.arange(
-                1 + 1 + self.nt, 1 + 1 + self.nt + self.nt * self.nta
-            ).reshape((self.nt, self.nta), order="F")
-        else:
-            return np.arange(1 + self.nt, 1 + self.nt + self.nt * self.nta).reshape(
-                (self.nt, self.nta), order="F"
-            )
+        pass
 
     def get_taf_pars(self, pval):
         if self.nta > 0:
